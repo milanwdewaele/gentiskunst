@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milan Dewaele: Gent Is Kunst</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://avatars2.githubusercontent.com/u/67167142?v=4" type="image/png">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-harp.js"></script>
+
+</head>
+
+<body>
+    <p class="devNote">To-do: Make it so the map pin moves to the right side of page so it's not obstructed by text; Fix map loading.</p>
+    <div id="mapContainer" style="width:100vw;height:100vh;"></div>
+    <div class="container">
+        <h1>Secondje...</h1>
+        <h2>Dit duurt niet lang</h2>
+    </div>
+
+
+</body>
+<script>
+    var platform = new H.service.Platform({
+        'apikey': 'ZeIrT6VgWhIxumci1gxBkmztr4eB7DzyHblonx6oJBw'
+    });
+    const engineType = H.Map.EngineType['HARP'];
+    const defaultLayers = platform.createDefaultLayers({ engineType });
+
+
+
+    $(document).ready(function () {
+        var offset = Math.floor(Math.random() * 347) + 1;
+        var url = "https://data.stad.gent/api/explore/v2.1/catalog/datasets/gent-kunst-op-straat/records?limit=1&offset=" + offset;
+
+        $.ajax({
+            url: url,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                $(".container").html(`
+                <h1>
+                    <a href="${data.results[0].webpagina}">${data.results[0].naam_nl}</a>
+                </h1>
+                <h2>${data.results[0].beschrijving_nl}</h2>
+                <small>Bron: <a href="${data.results[0].kunstwerk}">Stad Gent</a></small>
+                `);
+                const map = new H.Map(
+                    document.getElementById("mapContainer"),
+                    // Select a map style
+                    defaultLayers.raster.normal.mapnight, {
+                    engineType,
+                    zoom: 20,
+                    pixelRatio: window.devicePixelRatio || 1,
+                    center: { lat: data.results[0].lat, lng: data.results[0].long }
+                });
+                group = new H.map.Group();
+                map.addObject(group);
+                marker = new H.map.Marker(map.getCenter());
+                group.addObject(marker);
+            },
+            error: function (xhr, status, error) {
+                $(".container").html("<h1>Er is iets misgegaan</h1>");
+            }
+        });
+    });
+</script>
+
+
+</html>

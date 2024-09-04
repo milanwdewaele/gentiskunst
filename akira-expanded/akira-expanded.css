@@ -1,0 +1,8 @@
+/* akira-expanded-super-bold */
+@font-face {
+	font-family: Akira Expanded;
+	font-style: normal;
+	font-weight: 700;
+	src: local("Akira Expanded Super Bold"), local("AkiraExpanded-SuperBold"), url(akira-expanded-super-bold.woff2) format("woff2");
+}
+
